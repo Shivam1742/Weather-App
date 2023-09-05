@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background-color: rgb(29, 29, 29);
+      }
+
+      .wrapper {
+        /* background-color: aquamarine; */
+        height: 100vh;
+        /* box-shadow: 0 0 5px #eee; */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .card {
+        width: 20rem;
+        min-height: 20rem;
+        background: linear-gradient(120deg, teal 40%, rgb(54, 224, 145));
+        box-shadow: 0 0 5px 1px #ddd;
+        border-radius: 0.5rem;
+        padding: 1.5rem 1rem;
+      }
+
+      .card form {
+        display: flex;
+        gap: 1rem;
+        height: 2.5rem;
+        position: relative;
+        margin-bottom: 1rem;
+      }
+
+      .card form input {
+        flex: 1;
+        border-radius: 2rem;
+        border: none;
+        outline: none;
+        padding: 0 1rem;
+        font-size: 16px;
+      }
+
+      .card form button {
+        border-radius: 50%;
+        /* padding: 10px 15px; */
+        text-align: center;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        box-sizing: border-box;
+        text-align: center;
+      }
+
+      .card form button:hover {
+        box-shadow: 0 0 1px 3px #ddd;
+      }
+
+      .card form button img {
+        width: 40px;
+        height: 30px;
+        object-fit: contain;
+        padding: 8px;
+      }
+
+      .details {
+        display: flex;
+        justify-content: center;
+      }
+
+      .details img {
+        width: 150px;
+        height: 150px;
+        object-fit: contain;
+        margin-bottom: 0.5rem;
+      }
+
+      .details div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .details .details-weather > img + p {
+        font-size: 3rem;
+        font-weight: bold;
+        color: #fff;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+      .details .details-weather > img + p + p {
+        font-size: 2rem;
+
+        color: #fff;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="card">
+        <form action="">
+          <input
+            type="search"
+            name=""
+            id="search"
+            spellcheck="false"
+            placeholder="Enter City Name"
+          />
+          <button type="submit" id="search-btn">
+            <img src="./images/search.png" alt="" />
+          </button>
+        </form>
+
+        <div class="details">
+          <div class="details-weather">
+            <img id="weather-img" src="./images/clear.png" alt="weather" />
+            <p class="temp"><span id="temp">30</span>°C</p>
+            <p id="city">Delhi</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      async function checkWeather(city) {
+        const response = await fetch(
+          `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=c9732296a4e9dae66f1996a139c0512c&units=metric`,
+        );
+
+        const data = await response.json();
+        console.log(data);
+        document.querySelector("#temp").innerText = data.main.temp;
+        document.querySelector("#city").innerText = data.name;
+
+        const weather = data.weather[0].main;
+        const img = document.querySelector("#weather-img");
+
+        if (weather.toLowerCase() === "clouds") {
+          img.src = "./images/clouds.png";
+        } else if (weather.toLowerCase() === "clear") {
+          img.src = "./images/clear.png";
+        } else if (weather.toLowerCase() === "rain") {
+          img.src = "./images/rain.png";
+        } else if (weather.toLowerCase() === "drizzle") {
+          img.src = "./images/drizzle.png";
+        } else if (weather.toLowerCase() === "mist") {
+          img.src = "./images/mist.png";
+        } else if (weather.toLowerCase() === "haze") {
+          img.src = "./images/haze.png";
+        }
+      }
+
+      const searchBtn = document.querySelector("#search-btn");
+      const searchInput = document.querySelector("#search");
+
+      searchBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        checkWeather(searchInput.value);
+        searchInput.value = null;
+      });
+      document.onreadystatechange = function () {
+        if (
+          document.readyState === "ready" ||
+          document.readyState === "complete"
+        ) {
+          checkWeather("delhi");
+        }
+      };
+    </script>
+  </body>
+</html>
